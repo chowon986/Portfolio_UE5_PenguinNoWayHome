@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
+#include "PaperFlipbookComponent.h"
 
 
 APlayerCharacterBase::APlayerCharacterBase()
@@ -26,7 +27,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 	if (inputJumpAction.Succeeded())
 		jumpAction = inputJumpAction.Object;
 
-	State = EPlayerState::Idle;
+	state = EPlayerState::Idle;
 }
 
 void APlayerCharacterBase::BeginPlay()
@@ -53,25 +54,62 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 	if (UEnhancedInputComponent* enhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		enhancedInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::Move);
-		enhancedInputComponent->BindAction(jumpAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::Jump);
+		enhancedInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::InputMoveKey);
+		enhancedInputComponent->BindAction(jumpAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::InputJumpKey);
 	}
 }
 
-void APlayerCharacterBase::Move(const FInputActionValue& value)
+void APlayerCharacterBase::InputMoveKey(const FInputActionValue& value)
 {
-	// AddMovementInput(이동할 방향, 거리)
 	FVector movementVector = value.Get<FVector>();
 	AddMovementInput(movementVector, .1f);
+	SetState(EPlayerState::Run);
+	SetSpriteRotation(movementVector.X);
+}
+
+void APlayerCharacterBase::InputJumpKey(const FInputActionValue& value)
+{
+	Jump();
+	SetState(EPlayerState::Jump);
 }
 
 void APlayerCharacterBase::SetState(EPlayerState newState)
 {
-	if (State != newState)
-		State = newState;
+	if (state != newState)
+	{
+		state = newState;
+		SetFlipbook();
+	}
 }
 
 EPlayerState APlayerCharacterBase::GetState()
 {
-	return State;
+	return state;
+}
+
+void APlayerCharacterBase::SetFlipbook()
+{
+	switch (state)
+	{
+	case EPlayerState::Idle:
+		GetSprite()->SetFlipbook(idleAnimation);
+		break;
+	case EPlayerState::Run:
+		GetSprite()->SetFlipbook(runAnimation);
+		break;
+	case EPlayerState::Jump:
+		GetSprite()->SetFlipbook(jumpAnimation);
+		break;
+	default:
+		break;
+	}
+}
+
+void APlayerCharacterBase::SetSpriteRotation(float value)
+{
+	if (prevRotationValue != value)
+	{
+		prevRotationValue = value;
+		GetSprite()->AddLocalRotation({ 0.f, 180, 0.f });
+	}
 }

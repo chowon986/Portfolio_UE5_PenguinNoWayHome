@@ -15,6 +15,7 @@ enum class EPlayerState : uint8
 	Jump
 };
 
+class UPaperFlipbook;
 class UInputAction;
 class UInputMappingContext;
 UCLASS()
@@ -33,11 +34,14 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-	void Move(const FInputActionValue& value);
+	void InputMoveKey(const FInputActionValue& value);
+	void InputJumpKey(const FInputActionValue& value);
 
 private:
 	void SetState(EPlayerState newState);
 	EPlayerState GetState();
+	void SetFlipbook();
+	void SetSpriteRotation(float value);
 
 private:
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -50,5 +54,17 @@ private:
 	UInputMappingContext* defaultContext;
 
 	UPROPERTY(EditAnywhere, Category = State)
-	EPlayerState State;
+	EPlayerState state;
+
+	float prevRotationValue;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+	UPaperFlipbook* idleAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+	UPaperFlipbook* runAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+	UPaperFlipbook* jumpAnimation;
 };
