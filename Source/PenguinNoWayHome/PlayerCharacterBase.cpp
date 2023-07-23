@@ -28,6 +28,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 		jumpAction = inputJumpAction.Object;
 
 	state = EPlayerState::Idle;
+	prevRotationValue = 1.f;
 }
 
 void APlayerCharacterBase::BeginPlay()
@@ -46,6 +47,18 @@ void APlayerCharacterBase::BeginPlay()
 void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	UCharacterMovementComponent* movement = GetCharacterMovement();
+	if (movement)
+	{
+		bool isMoving = movement->Velocity.Size() != 0;
+		if (!isMoving)
+		{
+			if (GetState() != EPlayerState::Jump)
+				SetState(EPlayerState::Idle);
+		}
+	}
+
 }
 
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
