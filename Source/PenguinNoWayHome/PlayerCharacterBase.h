@@ -7,9 +7,14 @@
 #include "InputActionValue.h"
 #include "PlayerCharacterBase.generated.h"
 
-/**
- * 
- */
+UENUM(BlueprintType)
+enum class EPlayerState : uint8
+{
+	Idle,
+	Run,
+	Jump
+};
+
 class UInputAction;
 class UInputMappingContext;
 UCLASS()
@@ -27,14 +32,23 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-
 protected:
 	void Move(const FInputActionValue& value);
 
 private:
+	void SetState(EPlayerState newState);
+	EPlayerState GetState();
+
+private:
 	UPROPERTY(EditAnywhere, Category = Input)
-	UInputAction* movementAction;
+	UInputAction* moveAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* jumpAction;
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputMappingContext* defaultContext;
+
+	UPROPERTY(EditAnywhere, Category = State)
+	EPlayerState State;
 };
