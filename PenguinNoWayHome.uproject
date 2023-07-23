@@ -7,7 +7,12 @@
 		{
 			"Name": "PenguinNoWayHome",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"CoreUObject",
+				"Paper2D",
+				"Engine"
+			]
 		}
 	],
 	"Plugins": [
