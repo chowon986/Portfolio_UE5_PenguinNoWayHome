@@ -27,6 +27,16 @@ APlayerCharacterBase::APlayerCharacterBase()
 	if (inputJumpAction.Succeeded())
 		jumpAction = inputJumpAction.Object;
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> inputFlyAction(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/IAFly.IAFly'"));
+
+	if (inputFlyAction.Succeeded())
+		flyAction = inputFlyAction.Object;
+
+	flipbookComponent = FindComponentByClass<UPaperFlipbookComponent>();
+	if (IsValid(flipbookComponent))
+	{
+		flipbookComponent->OnFinishedPlaying.AddDynamic(this, &APlayerCharacterBase::OnFlipbookFinishedPlaying);
+	}
 	state = EPlayerState::Idle;
 	prevRotationValue = 1.f;
 }
@@ -54,11 +64,24 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		bool isMoving = movement->Velocity.Size() != 0;
 		if (!isMoving)
 		{
-			if (GetState() != EPlayerState::Jump)
+			if (state != EPlayerState::JumpStart &&
+				state != EPlayerState::Jump &&
+				state != EPlayerState::JumpEnd &&
+				state != EPlayerState::FlyStart &&
+				state != EPlayerState::Fly &&
+				state != EPlayerState::FlyEnd)
 				SetState(EPlayerState::Idle);
 		}
+
+		if (state == EPlayerState::Jump && !movement->IsFalling())
+			SetState(EPlayerState::JumpEnd);
+
+		else if (state == EPlayerState::Fly && !movement->IsFalling())
+			SetState(EPlayerState::FlyEnd);
 	}
 
+	if (!flipbookComponent->IsPlaying())
+		flipbookComponent->Play();
 }
 
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -68,7 +91,8 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	if (UEnhancedInputComponent* enhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		enhancedInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::InputMoveKey);
-		enhancedInputComponent->BindAction(jumpAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::InputJumpKey);
+		enhancedInputComponent->BindAction(jumpAction, ETriggerEvent::Started, this, &APlayerCharacterBase::InputJumpKey);
+		enhancedInputComponent->BindAction(flyAction, ETriggerEvent::Started, this, &APlayerCharacterBase::InputFlyKey);
 	}
 }
 
@@ -76,14 +100,27 @@ void APlayerCharacterBase::InputMoveKey(const FInputActionValue& value)
 {
 	FVector movementVector = value.Get<FVector>();
 	AddMovementInput(movementVector, .1f);
-	SetState(EPlayerState::Run);
+
+	if (state != EPlayerState::JumpStart &&
+		state != EPlayerState::Jump &&
+		state != EPlayerState::FlyStart &&
+		state != EPlayerState::Fly)
+	{
+		SetState(EPlayerState::Run);
+	}
 	SetSpriteRotation(movementVector.X);
 }
 
 void APlayerCharacterBase::InputJumpKey(const FInputActionValue& value)
 {
+ 	SetState(EPlayerState::JumpStart);
 	Jump();
-	SetState(EPlayerState::Jump);
+}
+
+void APlayerCharacterBase::InputFlyKey(const FInputActionValue& value)
+{
+	SetState(EPlayerState::FlyStart);
+	Jump();
 }
 
 void APlayerCharacterBase::SetState(EPlayerState newState)
@@ -106,12 +143,35 @@ void APlayerCharacterBase::SetFlipbook()
 	{
 	case EPlayerState::Idle:
 		GetSprite()->SetFlipbook(idleAnimation);
+		flipbookComponent->SetLooping(true);
 		break;
 	case EPlayerState::Run:
 		GetSprite()->SetFlipbook(runAnimation);
+		flipbookComponent->SetLooping(true);
+		break;
+	case EPlayerState::JumpStart:
+		GetSprite()->SetFlipbook(jumpStartAnimation);
+		flipbookComponent->SetLooping(false);
 		break;
 	case EPlayerState::Jump:
 		GetSprite()->SetFlipbook(jumpAnimation);
+		flipbookComponent->SetLooping(true);
+		break;
+	case EPlayerState::JumpEnd:
+		GetSprite()->SetFlipbook(jumpEndAnimation);
+		flipbookComponent->SetLooping(false);
+		break;
+	case EPlayerState::FlyStart:
+		GetSprite()->SetFlipbook(flyStartAnimation);
+		flipbookComponent->SetLooping(false);
+		break;
+	case EPlayerState::Fly:
+		GetSprite()->SetFlipbook(flyAnimation);
+		flipbookComponent->SetLooping(true);
+		break;
+	case EPlayerState::FlyEnd:
+		GetSprite()->SetFlipbook(flyEndAnimation);
+		flipbookComponent->SetLooping(false);
 		break;
 	default:
 		break;
@@ -125,4 +185,16 @@ void APlayerCharacterBase::SetSpriteRotation(float value)
 		prevRotationValue = value;
 		GetSprite()->AddLocalRotation({ 0.f, 180, 0.f });
 	}
+}
+
+void APlayerCharacterBase::OnFlipbookFinishedPlaying()
+{
+	if (state == EPlayerState::JumpStart)
+		SetState(EPlayerState::Jump);
+
+	else if (state == EPlayerState::FlyStart)
+		SetState(EPlayerState::Fly);
+
+	else if (state == EPlayerState::JumpEnd || state == EPlayerState::FlyEnd)
+		SetState(EPlayerState::Idle);
 }

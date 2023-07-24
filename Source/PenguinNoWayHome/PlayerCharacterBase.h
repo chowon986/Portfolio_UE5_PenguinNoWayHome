@@ -12,9 +12,15 @@ enum class EPlayerState : uint8
 {
 	Idle,
 	Run,
-	Jump
+	JumpStart,
+	Jump,
+	JumpEnd,
+	FlyStart,
+	Fly,
+	FlyEnd
 };
 
+class UPaperFlipbookComponent;
 class UPaperFlipbook;
 class UInputAction;
 class UInputMappingContext;
@@ -36,6 +42,7 @@ public:
 protected:
 	void InputMoveKey(const FInputActionValue& value);
 	void InputJumpKey(const FInputActionValue& value);
+	void InputFlyKey(const FInputActionValue& value);
 
 private:
 	void SetState(EPlayerState newState);
@@ -43,12 +50,19 @@ private:
 	void SetFlipbook();
 	void SetSpriteRotation(float value);
 
+public:
+	UFUNCTION()
+	void OnFlipbookFinishedPlaying();
+
 private:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* moveAction;
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* jumpAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* flyAction;
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputMappingContext* defaultContext;
@@ -66,5 +80,23 @@ public:
 	UPaperFlipbook* runAnimation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+	UPaperFlipbook* jumpStartAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
 	UPaperFlipbook* jumpAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+	UPaperFlipbook* jumpEndAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+	UPaperFlipbook* flyStartAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+	UPaperFlipbook* flyAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+	UPaperFlipbook* flyEndAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperFlipbookComponent* flipbookComponent;
 };
