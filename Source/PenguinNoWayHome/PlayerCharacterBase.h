@@ -30,6 +30,7 @@ class PENGUINNOWAYHOME_API APlayerCharacterBase : public APaperCharacter
 	GENERATED_BODY()
 
 	DECLARE_EVENT_OneParam(APlayerCharacterBase, PlayerHPChangedEvent, float)
+	DECLARE_EVENT_OneParam(APlayerCharacterBase, PlayerFlyChangedEvent, float)
 
 public:
 	APlayerCharacterBase();
@@ -58,6 +59,8 @@ public:
 
 	int32 GetMaxHealth() { return maxHealth; }
 	float GetCurrentHealth() { return health; }
+	int32 GetMaxFly() { return maxFly; }
+	float GetCurrentFly() { return fly; }
 
 
 private:
@@ -108,7 +111,12 @@ public:
 
 	float maxHealth;
 	float health;
+
+	float maxFly;
+	float fly;
+
 	float elapsedTime;
 
 	PlayerHPChangedEvent OnPlayerHPChangedEvent;
+	PlayerFlyChangedEvent OnPlayerFlyChangedEvent;
 };

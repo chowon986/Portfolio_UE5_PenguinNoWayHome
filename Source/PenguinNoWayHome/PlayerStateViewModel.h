@@ -24,8 +24,16 @@ public:
 	UFUNCTION(BlueprintPure, FieldNotify)
 		float GetHealthPercent() const { return currentHealth / maxHealth; }
 
+	UFUNCTION(BlueprintCallable)
+		void SetCurrentFly(float NewCurrentFly);
+	UFUNCTION(BlueprintCallable)
+		float GetCurrentFly() const { return currentFly; }
+	UFUNCTION(BlueprintPure, FieldNotify)
+		float GetFlyPercent() const { return currentFly / maxFly; }
+
 private:
 	void OnPlayerHPChanged(float HP);
+	void OnPlayerFlyChanged(float Fly);
 
 public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter = "SetCurrentHealth", Getter = "GetCurrentHealth")
@@ -33,4 +41,10 @@ public:
 
 	UPROPERTY()
 	float maxHealth;
+
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter = "SetCurrentFly", Getter = "GetCurrentFly")
+	float currentFly;
+
+	UPROPERTY()
+	float maxFly;
 };

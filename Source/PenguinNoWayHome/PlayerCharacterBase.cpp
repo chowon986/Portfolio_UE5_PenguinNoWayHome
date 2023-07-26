@@ -43,6 +43,9 @@ APlayerCharacterBase::APlayerCharacterBase()
 	maxHealth = 10.f;
 	health = 10.f;
 
+	maxFly = 10.f;
+	fly = 10.f;
+
 	elapsedTime = 0.f;
 }
 
@@ -63,15 +66,20 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// HP, Fly 감소 테스트
 	elapsedTime += DeltaTime;
 
 	if (elapsedTime > 5.f)
 	{
 		health -= 1.f;
+		fly -= 1.f;
 		elapsedTime = 0.f;
 
+
 		OnPlayerHPChangedEvent.Broadcast(health);
+		OnPlayerFlyChangedEvent.Broadcast(fly);
 	}
+	//
 
 	UCharacterMovementComponent* movement = GetCharacterMovement();
 	if (movement)
