@@ -14,4 +14,19 @@ class PENGUINNOWAYHOME_API APlayerCharacterController : public APlayerController
 {
 	GENERATED_BODY()
 	
+public:
+	APlayerCharacterController();
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
+	virtual void Tick(float DeltaTime) override;
+	virtual void SetupInputComponent();
+	virtual void PostInitializeComponents() override;
+
+protected:
+	virtual void OnPossess(APawn* aPawn) override;
+	virtual void OnUnPossess() override;
+
 };

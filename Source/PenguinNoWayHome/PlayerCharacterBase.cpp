@@ -39,6 +39,11 @@ APlayerCharacterBase::APlayerCharacterBase()
 	}
 	state = EPlayerState::Idle;
 	prevRotationValue = 1.f;
+
+	maxHealth = 10.f;
+	health = 10.f;
+
+	elapsedTime = 0.f;
 }
 
 void APlayerCharacterBase::BeginPlay()
@@ -57,6 +62,16 @@ void APlayerCharacterBase::BeginPlay()
 void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	elapsedTime += DeltaTime;
+
+	if (elapsedTime > 5.f)
+	{
+		health -= 1.f;
+		elapsedTime = 0.f;
+
+		OnPlayerHPChangedEvent.Broadcast(health);
+	}
 
 	UCharacterMovementComponent* movement = GetCharacterMovement();
 	if (movement)

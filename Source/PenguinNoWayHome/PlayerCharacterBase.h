@@ -29,6 +29,8 @@ class PENGUINNOWAYHOME_API APlayerCharacterBase : public APaperCharacter
 {
 	GENERATED_BODY()
 
+	DECLARE_EVENT_OneParam(APlayerCharacterBase, PlayerHPChangedEvent, float)
+
 public:
 	APlayerCharacterBase();
 
@@ -53,6 +55,10 @@ private:
 public:
 	UFUNCTION()
 	void OnFlipbookFinishedPlaying();
+
+	int32 GetMaxHealth() { return maxHealth; }
+	float GetCurrentHealth() { return health; }
+
 
 private:
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -99,4 +105,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPaperFlipbookComponent* flipbookComponent;
+
+	float maxHealth;
+	float health;
+	float elapsedTime;
+
+	PlayerHPChangedEvent OnPlayerHPChangedEvent;
 };
