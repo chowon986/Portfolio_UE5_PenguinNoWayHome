@@ -33,7 +33,6 @@ enum class EBuffType : uint8
 };
 
 
-
 USTRUCT(BlueprintType)
 struct  FItemTable : public FTableRowBase
 {
@@ -47,8 +46,8 @@ public:
 	EBuffType buffType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
-	UTexture2D* previewImage;
+	float Value;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
-	FString texturePath;
+	class UPaperFlipbook* previewImage;
 };

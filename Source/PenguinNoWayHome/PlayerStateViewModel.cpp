@@ -19,6 +19,7 @@ UPlayerStateViewModel::UPlayerStateViewModel()
 				player->OnPlayerHPChangedEvent.AddUObject(this, &UPlayerStateViewModel::OnPlayerHPChanged);
 				maxHealth = player->GetMaxHealth();
 				SetCurrentHealth(player->GetCurrentHealth());
+				
 				player->OnPlayerFlyChangedEvent.AddUObject(this, &UPlayerStateViewModel::OnPlayerFlyChanged);
 				maxFly = player->GetMaxFly();
 				SetCurrentFly(player->GetCurrentFly());

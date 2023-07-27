@@ -41,10 +41,10 @@ APlayerCharacterBase::APlayerCharacterBase()
 	prevRotationValue = 1.f;
 
 	maxHealth = 10.f;
-	health = 10.f;
+	health = 5.f;
 
 	maxFly = 10.f;
-	fly = 10.f;
+	fly = 5.f;
 
 	elapsedTime = 0.f;
 }
@@ -67,18 +67,18 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// HP, Fly 감소 테스트
-	elapsedTime += DeltaTime;
+	//elapsedTime += DeltaTime;
 
-	if (elapsedTime > 5.f)
-	{
-		health -= 1.f;
-		fly -= 1.f;
-		elapsedTime = 0.f;
+	//if (elapsedTime > 5.f)
+	//{
+	//	health -= 1.f;
+	//	fly -= 1.f;
+	//	elapsedTime = 0.f;
 
 
-		OnPlayerHPChangedEvent.Broadcast(health);
-		OnPlayerFlyChangedEvent.Broadcast(fly);
-	}
+	//	OnPlayerHPChangedEvent.Broadcast(health);
+	//	OnPlayerFlyChangedEvent.Broadcast(fly);
+	//}
 	//
 
 	UCharacterMovementComponent* movement = GetCharacterMovement();
@@ -220,4 +220,16 @@ void APlayerCharacterBase::OnFlipbookFinishedPlaying()
 
 	else if (state == EPlayerState::JumpEnd || state == EPlayerState::FlyEnd)
 		SetState(EPlayerState::Idle);
+}
+
+void APlayerCharacterBase::SetCurrentHealth(float value)
+{	
+	health = value;
+	OnPlayerHPChangedEvent.Broadcast(health);
+}
+
+void APlayerCharacterBase::SetCurrentFly(float value)
+{
+	fly = value;
+	OnPlayerFlyChangedEvent.Broadcast(fly);
 }

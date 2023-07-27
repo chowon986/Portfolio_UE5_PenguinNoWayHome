@@ -62,6 +62,9 @@ public:
 	int32 GetMaxFly() { return maxFly; }
 	float GetCurrentFly() { return fly; }
 
+	void SetCurrentHealth(float value);
+	void SetCurrentFly(float value);
+
 
 private:
 	UPROPERTY(EditAnywhere, Category = Input)
