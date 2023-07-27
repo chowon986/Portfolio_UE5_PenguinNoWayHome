@@ -2,25 +2,28 @@
 
 #pragma once
 
-#include "GameInfo.h"
-#include "PaperCharacter.h"
-#include "NonPlayerCharacterBase.generated.h"
+#include "MonsterBase.h"
+#include "Fan.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PENGUINNOWAYHOME_API ANonPlayerCharacterBase : public APaperCharacter
+class PENGUINNOWAYHOME_API AFan : public AMonsterBase
 {
 	GENERATED_BODY()
-
+	
 public:
-	ANonPlayerCharacterBase();
+	AFan();
 
 protected:
 	virtual void BeginPlay() override;
 
 public:
 	virtual void Tick(float DeltaTime) override;
-	virtual void CollisionCheck();
+	virtual void CollisionCheck() override;
+
+public:
+	float elapsedTime;
+	float intervalTime;
 };

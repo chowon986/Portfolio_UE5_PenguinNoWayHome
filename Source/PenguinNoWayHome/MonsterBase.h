@@ -2,20 +2,19 @@
 
 #pragma once
 
-#include "GameInfo.h"
-#include "PaperCharacter.h"
-#include "NonPlayerCharacterBase.generated.h"
+#include "NonPlayerCharacterBase.h"
+#include "MonsterBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PENGUINNOWAYHOME_API ANonPlayerCharacterBase : public APaperCharacter
+class PENGUINNOWAYHOME_API AMonsterBase : public ANonPlayerCharacterBase
 {
 	GENERATED_BODY()
 
 public:
-	ANonPlayerCharacterBase();
+	AMonsterBase();
 
 protected:
 	virtual void BeginPlay() override;
@@ -23,4 +22,8 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void CollisionCheck();
+
+public:
+	UPROPERTY(EditAnywhere, Category = Item)
+	UDataTable* monsterTable;
 };
