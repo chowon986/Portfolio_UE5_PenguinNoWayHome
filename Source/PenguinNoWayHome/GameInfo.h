@@ -43,7 +43,7 @@ public:
 	FName itemName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
-	EBuffType buffType;
+	TArray<EBuffType> buffTypes;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	float Value;

@@ -54,32 +54,29 @@ void AItemBase::CollisionCheck()
 			if (IsValid(player) && itemID != -1)
 			{
 				FItemTable* table = GetItemInfo(itemID);
-				EBuffType buffType = table->buffType;
+				TArray<EBuffType> buffType = table->buffTypes;
+				int buffTypeSize = buffType.Num();
 				float value = table->Value;
 				float playerHealth = player->GetCurrentHealth();
 				float playerFly = player->GetCurrentFly();
 				float playerMaxHealth = player->GetMaxHealth();
 				float playerMaxFly = player->GetMaxFly();
 
-				switch (buffType)
+				for (int j = 0; j < buffTypeSize; j++)
 				{
-				case EBuffType::HP:
-				{
-					float healthValue = (playerHealth + value) >= playerMaxHealth ? playerMaxHealth : (playerHealth + value);
-					player->SetCurrentHealth(healthValue);
-					Destroy();
-					break;
+					if (buffType[j] == EBuffType::HP)
+					{
+						float healthValue = (playerHealth + value) >= playerMaxHealth ? playerMaxHealth : (playerHealth + value);
+						player->SetCurrentHealth(healthValue);
+					}
+					else if (buffType[j] == EBuffType::FLY)
+					{
+						float flyValue = (playerFly + value) >= playerMaxFly ? playerMaxFly : (playerFly + value);
+						player->SetCurrentFly(flyValue);
+					}
 				}
-				case EBuffType::FLY:
-				{
-					float flyValue = (playerFly + value) >= playerMaxFly ? playerMaxFly : (playerFly + value);
-					player->SetCurrentFly(flyValue);
-					Destroy();
-					break;
-				}
-				default:
-					break;
-				}
+
+				Destroy();
 			}
 		}
 	}

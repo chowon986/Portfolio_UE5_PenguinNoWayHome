@@ -20,4 +20,6 @@ void AMonsterBase::Tick(float DeltaTime)
 
 void AMonsterBase::CollisionCheck()
 {
+
+
 }

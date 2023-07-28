@@ -36,16 +36,20 @@ void AFan::CollisionCheck()
 
 	TArray<FOverlapResult> resultArray;
 
+	FVector originLocation = GetActorLocation();
+
+	FVector collisionLocation = { originLocation.X + GetActorForwardVector().X * 70.f, originLocation.Y, originLocation.Z};
+	
 	bool onCollision = GetWorld()->OverlapMultiByChannel(resultArray,
-		GetActorLocation(), FQuat::Identity,
+		collisionLocation, FQuat::Identity,
 		ECollisionChannel::ECC_Pawn,
-		FCollisionShape::MakeSphere(80),
+		FCollisionShape::MakeSphere(60),
 		param);
 
 #if ENABLE_DRAW_DEBUG
 	FColor	collisionColor = onCollision ? FColor::Red : FColor::Green;
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), 80, 10, collisionColor, false, 0.5f);
+	DrawDebugSphere(GetWorld(), collisionLocation, 60, 10, collisionColor, false, 0.5f);
 
 #endif
 
