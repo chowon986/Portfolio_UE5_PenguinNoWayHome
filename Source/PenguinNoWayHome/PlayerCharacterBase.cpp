@@ -47,6 +47,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 	fly = 5.f;
 
 	elapsedTime = 0.f;
+	movable = true;
 }
 
 void APlayerCharacterBase::BeginPlay()
@@ -65,6 +66,19 @@ void APlayerCharacterBase::BeginPlay()
 void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (state == EPlayerState::Death)
+	{
+		FVector curLocation = GetActorLocation();
+		if (curLocation.Z < -500.f)
+			Destroy();
+	}
+
+	if (health <= 0)
+	{
+		movable = false;
+		SetState(EPlayerState::Death);
+	}
 
 	// HP, Fly 감소 테스트
 	//elapsedTime += DeltaTime;
@@ -92,7 +106,8 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 				state != EPlayerState::JumpEnd &&
 				state != EPlayerState::FlyStart &&
 				state != EPlayerState::Fly &&
-				state != EPlayerState::FlyEnd)
+				state != EPlayerState::FlyEnd &&
+				state != EPlayerState::Death)
 				SetState(EPlayerState::Idle);
 		}
 
@@ -121,29 +136,38 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 void APlayerCharacterBase::InputMoveKey(const FInputActionValue& value)
 {
-	FVector movementVector = value.Get<FVector>();
-	AddMovementInput(movementVector, .1f);
-
-	if (state != EPlayerState::JumpStart &&
-		state != EPlayerState::Jump &&
-		state != EPlayerState::FlyStart &&
-		state != EPlayerState::Fly)
+	if (movable)
 	{
-		SetState(EPlayerState::Run);
+		FVector movementVector = value.Get<FVector>();
+		AddMovementInput(movementVector, .1f);
+
+		if (state != EPlayerState::JumpStart &&
+			state != EPlayerState::Jump &&
+			state != EPlayerState::FlyStart &&
+			state != EPlayerState::Fly)
+		{
+			SetState(EPlayerState::Run);
+		}
+		SetSpriteRotation(movementVector.X);
 	}
-	SetSpriteRotation(movementVector.X);
 }
 
 void APlayerCharacterBase::InputJumpKey(const FInputActionValue& value)
 {
- 	SetState(EPlayerState::JumpStart);
-	Jump();
+	if (movable)
+	{
+		SetState(EPlayerState::JumpStart);
+		Jump();
+	}
 }
 
 void APlayerCharacterBase::InputFlyKey(const FInputActionValue& value)
 {
-	SetState(EPlayerState::FlyStart);
-	Jump();
+	if (movable)
+	{
+		SetState(EPlayerState::FlyStart);
+		Jump();
+	}
 }
 
 void APlayerCharacterBase::SetState(EPlayerState newState)
@@ -196,6 +220,9 @@ void APlayerCharacterBase::SetFlipbook()
 		GetSprite()->SetFlipbook(flyEndAnimation);
 		flipbookComponent->SetLooping(false);
 		break;
+	case EPlayerState::Death:
+		GetSprite()->SetFlipbook(idleAnimation);
+		Death();
 	default:
 		break;
 	}
@@ -232,4 +259,18 @@ void APlayerCharacterBase::SetCurrentFly(float value)
 {
 	fly = value;
 	OnPlayerFlyChangedEvent.Broadcast(fly);
+}
+
+void APlayerCharacterBase::Death()
+{
+	Jump();
+
+	FRotator CurrentRotation = GetSprite()->GetRelativeRotation();
+	FRotator NewRotation = FRotator(180.0f, CurrentRotation.Yaw, CurrentRotation.Roll);
+
+	GetSprite()->SetRelativeRotation(NewRotation);
+
+	FVector curLocation = GetActorLocation();
+
+	SetActorLocation({ curLocation.X, curLocation.Y + 100, curLocation.Z });
 }

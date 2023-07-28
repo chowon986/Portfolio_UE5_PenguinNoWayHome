@@ -17,7 +17,8 @@ enum class EPlayerState : uint8
 	JumpEnd,
 	FlyStart,
 	Fly,
-	FlyEnd
+	FlyEnd,
+	Death,
 };
 
 class UPaperFlipbookComponent;
@@ -64,6 +65,7 @@ public:
 
 	void SetCurrentHealth(float value);
 	void SetCurrentFly(float value);
+	void Death();
 
 
 private:
@@ -122,4 +124,6 @@ public:
 
 	PlayerHPChangedEvent OnPlayerHPChangedEvent;
 	PlayerFlyChangedEvent OnPlayerFlyChangedEvent;
+	
+	bool movable;
 };
