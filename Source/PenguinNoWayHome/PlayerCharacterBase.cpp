@@ -130,7 +130,7 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	{
 		enhancedInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::InputMoveKey);
 		enhancedInputComponent->BindAction(jumpAction, ETriggerEvent::Started, this, &APlayerCharacterBase::InputJumpKey);
-		enhancedInputComponent->BindAction(flyAction, ETriggerEvent::Started, this, &APlayerCharacterBase::InputFlyKey);
+		enhancedInputComponent->BindAction(flyAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::InputFlyKey);
 	}
 }
 
@@ -156,8 +156,12 @@ void APlayerCharacterBase::InputJumpKey(const FInputActionValue& value)
 {
 	if (movable)
 	{
-		SetState(EPlayerState::JumpStart);
-		Jump();
+		if (state == EPlayerState::Idle || state == EPlayerState::Run || state == EPlayerState::JumpEnd)
+		{
+			GetCharacterMovement()->JumpZVelocity = 300.0f;
+			SetState(EPlayerState::JumpStart);
+			Jump();
+		}
 	}
 }
 
@@ -165,8 +169,16 @@ void APlayerCharacterBase::InputFlyKey(const FInputActionValue& value)
 {
 	if (movable)
 	{
-		SetState(EPlayerState::FlyStart);
-		Jump();
+		if (state == EPlayerState::Idle || state == EPlayerState::Run || state == EPlayerState::JumpEnd)
+		{
+			GetCharacterMovement()->JumpZVelocity = 200.0f;
+			SetState(EPlayerState::FlyStart);
+			Jump();
+		}
+		else if (state == EPlayerState::Fly)
+		{
+			Jump();
+		}
 	}
 }
 
@@ -246,7 +258,7 @@ void APlayerCharacterBase::OnFlipbookFinishedPlaying()
 		SetState(EPlayerState::Fly);
 
 	else if (state == EPlayerState::JumpEnd || state == EPlayerState::FlyEnd)
-		SetState(EPlayerState::Idle);
+ 		SetState(EPlayerState::Idle);
 }
 
 void APlayerCharacterBase::SetCurrentHealth(float value)
@@ -263,6 +275,7 @@ void APlayerCharacterBase::SetCurrentFly(float value)
 
 void APlayerCharacterBase::Death()
 {
+	GetCharacterMovement()->JumpZVelocity = 500.0f;
 	Jump();
 
 	FRotator CurrentRotation = GetSprite()->GetRelativeRotation();
