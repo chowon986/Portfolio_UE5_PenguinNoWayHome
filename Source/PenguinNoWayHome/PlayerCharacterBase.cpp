@@ -40,8 +40,8 @@ APlayerCharacterBase::APlayerCharacterBase()
 	state = EPlayerState::Idle;
 	prevRotationValue = 1.f;
 
-	maxHealth = 10.f;
-	health = 5.f;
+	maxHealth = 100;
+	health = 10;
 
 	maxFly = 10.f;
 	fly = 5.f;
@@ -70,30 +70,19 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 	if (state == EPlayerState::Death)
 	{
 		FVector curLocation = GetActorLocation();
-		if (curLocation.Z < -500.f)
+		if (curLocation.Z < 0.f)
 			Destroy();
 	}
 
-	if (health <= 0)
+	if(state != EPlayerState::Death)
+		elapsedTime += DeltaTime;
+
+	if (elapsedTime > 2.f)
 	{
-		movable = false;
-		SetState(EPlayerState::Death);
+		SetCurrentHealth(health - 2);
+		OnPlayerHPChangedEvent.Broadcast(health);
+		elapsedTime = 0.f;
 	}
-
-	// HP, Fly 감소 테스트
-	//elapsedTime += DeltaTime;
-
-	//if (elapsedTime > 5.f)
-	//{
-	//	health -= 1.f;
-	//	fly -= 1.f;
-	//	elapsedTime = 0.f;
-
-
-	//	OnPlayerHPChangedEvent.Broadcast(health);
-	//	OnPlayerFlyChangedEvent.Broadcast(fly);
-	//}
-	//
 
 	UCharacterMovementComponent* movement = GetCharacterMovement();
 	if (movement)
@@ -171,13 +160,22 @@ void APlayerCharacterBase::InputFlyKey(const FInputActionValue& value)
 	{
 		if (state == EPlayerState::Idle || state == EPlayerState::Run || state == EPlayerState::JumpEnd)
 		{
-			GetCharacterMovement()->JumpZVelocity = 200.0f;
-			SetState(EPlayerState::FlyStart);
-			Jump();
+			if (fly > 0)
+			{
+				SetCurrentFly(fly - 0.2f);
+				GetCharacterMovement()->JumpZVelocity = 200.0f;
+				SetState(EPlayerState::FlyStart);
+				Jump();
+			}
 		}
 		else if (state == EPlayerState::Fly)
 		{
-			Jump();
+			if (fly > 0)
+			{
+				SetCurrentFly(fly - 0.2f);
+				fly -= 0.2f;
+				Jump();
+			}
 		}
 	}
 }
@@ -233,8 +231,8 @@ void APlayerCharacterBase::SetFlipbook()
 		flipbookComponent->SetLooping(false);
 		break;
 	case EPlayerState::Death:
-		GetSprite()->SetFlipbook(idleAnimation);
 		Death();
+		GetSprite()->SetFlipbook(idleAnimation);
 	default:
 		break;
 	}
@@ -286,4 +284,9 @@ void APlayerCharacterBase::Death()
 	FVector curLocation = GetActorLocation();
 
 	SetActorLocation({ curLocation.X, curLocation.Y + 100, curLocation.Z });
+}
+
+void APlayerCharacterBase::SetMovable(bool value)
+{
+	movable = value;
 }

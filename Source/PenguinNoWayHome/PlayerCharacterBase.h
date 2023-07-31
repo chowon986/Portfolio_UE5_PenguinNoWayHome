@@ -49,8 +49,6 @@ protected:
 	void InputFlyKey(const FInputActionValue& value);
 
 private:
-	void SetState(EPlayerState newState);
-	EPlayerState GetState();
 	void SetFlipbook();
 	void SetSpriteRotation(float value);
 
@@ -58,6 +56,8 @@ public:
 	UFUNCTION()
 	void OnFlipbookFinishedPlaying();
 
+	void SetState(EPlayerState newState);
+	EPlayerState GetState();
 	int32 GetMaxHealth() { return maxHealth; }
 	float GetCurrentHealth() { return health; }
 	int32 GetMaxFly() { return maxFly; }
@@ -66,6 +66,7 @@ public:
 	void SetCurrentHealth(float value);
 	void SetCurrentFly(float value);
 	void Death();
+	void SetMovable(bool value);
 
 
 private:
@@ -114,8 +115,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPaperFlipbookComponent* flipbookComponent;
 
-	float maxHealth;
-	float health;
+	int maxHealth;
+	int health;
 
 	float maxFly;
 	float fly;

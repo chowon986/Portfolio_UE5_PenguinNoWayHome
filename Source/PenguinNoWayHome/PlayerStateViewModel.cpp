@@ -50,6 +50,25 @@ void UPlayerStateViewModel::SetCurrentFly(float NewCurrentFly)
 void UPlayerStateViewModel::OnPlayerHPChanged(float HP)
 {
 	SetCurrentHealth(HP);
+
+	if (HP <= 0)
+	{
+		UWorld* world = GetWorld();
+		if (world)
+		{
+			APlayerController* controller = world->GetFirstPlayerController();
+			if (IsValid(controller))
+			{
+				APlayerCharacterBase* player = Cast<APlayerCharacterBase>(controller->GetCharacter());
+
+				if (IsValid(player))
+				{
+					player->SetMovable(false);
+					player->SetState(EPlayerState::Death);
+				}
+			}
+		}
+	}
 }
 
 
