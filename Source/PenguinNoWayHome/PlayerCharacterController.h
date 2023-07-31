@@ -13,6 +13,8 @@ UCLASS()
 class PENGUINNOWAYHOME_API APlayerCharacterController : public APlayerController
 {
 	GENERATED_BODY()
+	DECLARE_EVENT_OneParam(APlayerCharacterController, CountTimeEvent, bool)
+
 	
 public:
 	APlayerCharacterController();
@@ -25,8 +27,17 @@ public:
 	virtual void SetupInputComponent();
 	virtual void PostInitializeComponents() override;
 
+	float GetClearTime() { return clearTime; }
+
+
 protected:
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void OnUnPossess() override;
 
+private:
+	float clearTime;
+	bool canCountTime;
+
+public:
+	CountTimeEvent OnPlayerCountTimeEvent;
 };

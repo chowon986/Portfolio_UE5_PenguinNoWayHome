@@ -3,26 +3,24 @@
 #pragma once
 
 #include "GameInfo.h"
+#include <Components/TextBlock.h>
 #include "Blueprint/UserWidget.h"
-#include "MainHUDBase.generated.h"
+#include "ClearTimeBase.generated.h"
 
 /**
  * 
  */
-class UClearTimeBase;
 UCLASS()
-class PENGUINNOWAYHOME_API UMainHUDBase : public UUserWidget
+class PENGUINNOWAYHOME_API UClearTimeBase : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& _geo, float _DeltaTime) override;
 
-	void OnClearTimeChanged(bool value);
+	void SetCountTimeText();
 
-public:/*
-	UHPBarBase* hpBar;*/
-	UClearTimeBase* clearTime;
-	bool onceCheck;
+private:
+	UTextBlock* countTime;
 };

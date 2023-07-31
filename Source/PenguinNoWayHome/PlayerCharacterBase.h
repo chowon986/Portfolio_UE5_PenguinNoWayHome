@@ -67,7 +67,8 @@ public:
 	void SetCurrentFly(float value);
 	void Death();
 	void SetMovable(bool value);
-
+	bool GetIsCleared() { return isClear; }
+	void SetIsClear(bool value) { isClear = value; }
 
 private:
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -127,4 +128,5 @@ public:
 	PlayerFlyChangedEvent OnPlayerFlyChangedEvent;
 	
 	bool movable;
+	bool isClear;
 };

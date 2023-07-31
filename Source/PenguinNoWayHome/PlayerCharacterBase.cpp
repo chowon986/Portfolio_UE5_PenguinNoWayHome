@@ -77,7 +77,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 	if(state != EPlayerState::Death)
 		elapsedTime += DeltaTime;
 
-	if (elapsedTime > 2.f)
+	if (elapsedTime > 2.f && isClear == false)
 	{
 		SetCurrentHealth(health - 2);
 		OnPlayerHPChangedEvent.Broadcast(health);
