@@ -13,6 +13,7 @@ enum class EMonsterState : uint8
 	Attack,
 };
 
+class APlayerCharacterBase;
 class UPaperFlipbook;
 class UPaperFlipbookComponent;
 UCLASS()
@@ -37,6 +38,8 @@ public:
 	UFUNCTION()
 		void OnFlipbookFinishedPlaying();
 
+	void OnTimerExpired();
+
 public:
 	EMonsterState state;
 
@@ -50,6 +53,10 @@ public:
 	UPaperFlipbookComponent* flipbookComponent;
 
 	float elapsedTime;
+	float attackTime;
 	float intervalTime;
 	bool attackable;
+
+	FTimerHandle timerHandle;
+	APlayerCharacterBase* player; 
 };

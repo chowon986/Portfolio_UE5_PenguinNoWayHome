@@ -18,7 +18,10 @@ APolarBear::APolarBear()
 
 	elapsedTime = 0.f;
 	intervalTime = 2.f;
+	attackTime = 1.f;
 	attackable = true;
+
+	player = nullptr;
 }
 
 void APolarBear::BeginPlay()
@@ -81,7 +84,7 @@ void APolarBear::CollisionCheck()
 
 		for (int i = 0; i < range; i++)
 		{
-			APlayerCharacterBase* player = Cast<APlayerCharacterBase>(resultArray[i].GetActor());
+			player = Cast<APlayerCharacterBase>(resultArray[i].GetActor());
 
 			if (IsValid(player))
 				SetState(EMonsterState::Attack);
@@ -118,13 +121,13 @@ void APolarBear::TakeDamageCollisionCheck()
 
 		for (int i = 0; i < range; i++)
 		{
-			APlayerCharacterBase* player = Cast<APlayerCharacterBase>(resultArray[i].GetActor());
+			player = Cast<APlayerCharacterBase>(resultArray[i].GetActor());
 
 			if (IsValid(player))
 			{
-				float playerHealth = player->GetCurrentHealth();
-				float healthValue = (playerHealth - 1.f) >= 0 ? (playerHealth - 1.f) : 0;
-				player->SetCurrentHealth(healthValue);
+				player->AddLocationY(100.f);
+				player->SetState(EPlayerState::Fly);
+				GetWorldTimerManager().SetTimer(timerHandle, FTimerDelegate::CreateUObject(this, &APolarBear::OnTimerExpired), attackTime, false);
 			}
 		}
 	}
@@ -162,4 +165,10 @@ void APolarBear::OnFlipbookFinishedPlaying()
 {
 	if (state == EMonsterState::Attack)
 		SetState(EMonsterState::Idle);
+}
+
+void APolarBear::OnTimerExpired()
+{
+	player->AddLocationY(-100.f);
+	timerHandle.Invalidate();
 }

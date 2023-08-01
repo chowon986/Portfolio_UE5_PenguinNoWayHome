@@ -97,7 +97,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 				state != EPlayerState::Fly &&
 				state != EPlayerState::FlyEnd &&
 				state != EPlayerState::Death)
-				SetState(EPlayerState::Idle);
+					SetState(EPlayerState::Idle);
 		}
 
 		if (state == EPlayerState::Jump && !movement->IsFalling())
@@ -233,6 +233,8 @@ void APlayerCharacterBase::SetFlipbook()
 	case EPlayerState::Death:
 		Death();
 		GetSprite()->SetFlipbook(idleAnimation);
+		flipbookComponent->SetLooping(true);
+		break;
 	default:
 		break;
 	}
@@ -261,8 +263,8 @@ void APlayerCharacterBase::OnFlipbookFinishedPlaying()
 
 void APlayerCharacterBase::SetCurrentHealth(float value)
 {	
-	health = value;
-	OnPlayerHPChangedEvent.Broadcast(health);
+	/*health = value;
+	OnPlayerHPChangedEvent.Broadcast(health);*/
 }
 
 void APlayerCharacterBase::SetCurrentFly(float value)
@@ -280,13 +282,17 @@ void APlayerCharacterBase::Death()
 	FRotator NewRotation = FRotator(180.0f, CurrentRotation.Yaw, CurrentRotation.Roll);
 
 	GetSprite()->SetRelativeRotation(NewRotation);
-
-	FVector curLocation = GetActorLocation();
-
-	SetActorLocation({ curLocation.X, curLocation.Y + 100, curLocation.Z });
+	AddLocationY(100.f);
 }
 
 void APlayerCharacterBase::SetMovable(bool value)
 {
 	movable = value;
+}
+
+void APlayerCharacterBase::AddLocationY(float value)
+{
+	FVector curLocation = GetActorLocation();
+
+	SetActorLocation({ curLocation.X, curLocation.Y + value, curLocation.Z });
 }

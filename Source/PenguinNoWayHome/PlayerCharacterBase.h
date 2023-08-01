@@ -69,6 +69,7 @@ public:
 	void SetMovable(bool value);
 	bool GetIsCleared() { return isClear; }
 	void SetIsClear(bool value) { isClear = value; }
+	void AddLocationY(float value);
 
 private:
 	UPROPERTY(EditAnywhere, Category = Input)
