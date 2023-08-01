@@ -28,16 +28,18 @@ void AIgloo::CollisionCheck()
 
 	FVector collisionLocation = GetActorLocation();
 
+	collisionLocation = { collisionLocation.X, collisionLocation.Y + 10, collisionLocation.Z};
+
 	bool onCollision = GetWorld()->OverlapMultiByChannel(resultArray,
 		collisionLocation, FQuat::Identity,
-		ECollisionChannel::ECC_Pawn,
-		FCollisionShape::MakeSphere(30),
+		ECC_GameTraceChannel4,
+		FCollisionShape::MakeSphere(10),
 		param);
 
 #if ENABLE_DRAW_DEBUG
 	FColor	collisionColor = onCollision ? FColor::Red : FColor::Green;
 
-	DrawDebugSphere(GetWorld(), collisionLocation, 30, 10, collisionColor, false, 0.5f);
+	DrawDebugSphere(GetWorld(), collisionLocation, 10, 10, collisionColor, false, 0.5f);
 
 #endif
 

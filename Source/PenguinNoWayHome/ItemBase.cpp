@@ -30,7 +30,7 @@ void AItemBase::CollisionCheck()
 
 	bool onCollision = GetWorld()->OverlapMultiByChannel(resultArray,
 		GetActorLocation(), FQuat::Identity,
-		ECollisionChannel::ECC_Pawn,
+		ECC_GameTraceChannel1,
 		FCollisionShape::MakeSphere(10),
 		param);
 
