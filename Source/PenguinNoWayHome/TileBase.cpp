@@ -7,6 +7,8 @@
 ATileBase::ATileBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	breakTime = 0.f;
+	onceCheck = false;
 }
 
 void ATileBase::BeginPlay()
@@ -51,14 +53,16 @@ void ATileBase::CollisionCheck()
 		{
 			APlayerCharacterBase* player = Cast<APlayerCharacterBase>(resultArray[i].GetActor());
 
-			if (IsValid(player))
+			if (IsValid(player) && !onceCheck)
 			{
+				onceCheck = true;
+
 				switch (tileType)
 				{
 				case ETileType::None:
 					break;
-				case ETileType::Break:					
-					Destroy();
+				case ETileType::Break:
+					StartBreak();
 					break;
 				case ETileType::Move:
 					break;
@@ -73,4 +77,15 @@ void ATileBase::CollisionCheck()
 			}
 		}
 	}
+}
+
+void ATileBase::StartBreak()
+{
+	GetWorldTimerManager().SetTimer(timerHandle, FTimerDelegate::CreateUObject(this, &ATileBase::OnTimerExpired), breakTime, false);
+}
+
+void ATileBase::OnTimerExpired()
+{
+	Destroy();
+	timerHandle.Invalidate();
 }

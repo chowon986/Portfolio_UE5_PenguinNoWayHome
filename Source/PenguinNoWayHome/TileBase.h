@@ -33,8 +33,17 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void CollisionCheck();
+	void StartBreak();
+	void OnTimerExpired();
 
 public:
 	UPROPERTY(EditAnywhere, Category = State)
 	ETileType tileType;
+
+	FTimerHandle timerHandle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Time)
+	float breakTime;
+
+	bool onceCheck;
 };
