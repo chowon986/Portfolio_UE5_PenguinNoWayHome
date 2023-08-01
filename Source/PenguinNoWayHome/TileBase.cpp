@@ -9,11 +9,13 @@ ATileBase::ATileBase()
 	PrimaryActorTick.bCanEverTick = true;
 	breakTime = 0.f;
 	onceCheck = false;
+	moveDirection = "";
 }
 
 void ATileBase::BeginPlay()
 {
 	Super::BeginPlay();
+	startLocation = GetActorLocation();
 }
 
 void ATileBase::Tick(float DeltaTime)
@@ -55,16 +57,19 @@ void ATileBase::CollisionCheck()
 
 			if (IsValid(player) && !onceCheck)
 			{
-				onceCheck = true;
-
 				switch (tileType)
 				{
 				case ETileType::None:
 					break;
 				case ETileType::Break:
+					onceCheck = true;
 					StartBreak();
 					break;
 				case ETileType::Move:
+				{
+					if (moveDirection != "")
+						MoveTile(moveDirection);
+				}
 					break;
 				case ETileType::Jump:
 					player->GetCharacterMovement()->JumpZVelocity = 500.0f;
@@ -75,6 +80,19 @@ void ATileBase::CollisionCheck()
 					break;
 				}
 			}
+		}
+	}
+	else
+	{
+		if (startLocation != GetActorLocation())
+		{
+			float deltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
+
+			FVector curLocation = GetActorLocation();
+
+			FVector NewLocation = FMath::Lerp(curLocation, startLocation, FMath::Clamp(deltaTime * 5.f, 0.0f, 1.0f));
+
+			SetActorLocation(NewLocation);
 		}
 	}
 }
@@ -88,4 +106,19 @@ void ATileBase::OnTimerExpired()
 {
 	Destroy();
 	timerHandle.Invalidate();
+}
+
+void ATileBase::MoveTile(FString MoveDirection)
+{
+	if (MoveDirection == "Down") 
+	{
+		float deltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
+
+		FVector curLocation = GetActorLocation();
+
+		float moveSpeed = 10.0f; 
+		FVector newLocation = curLocation + FVector(0.f, 0.f, -moveSpeed * deltaTime);
+
+		SetActorLocation(newLocation);
+	}
 }

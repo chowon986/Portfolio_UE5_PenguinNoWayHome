@@ -137,6 +137,7 @@ void APlayerCharacterBase::InputMoveKey(const FInputActionValue& value)
 		{
 			SetState(EPlayerState::Run);
 		}
+
 		SetSpriteRotation(movementVector.X);
 	}
 }

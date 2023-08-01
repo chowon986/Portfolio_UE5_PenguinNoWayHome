@@ -35,6 +35,7 @@ public:
 	virtual void CollisionCheck();
 	void StartBreak();
 	void OnTimerExpired();
+	void MoveTile(FString MoveDirection);
 
 public:
 	UPROPERTY(EditAnywhere, Category = State)
@@ -46,4 +47,9 @@ public:
 	float breakTime;
 
 	bool onceCheck;
+
+	FVector startLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Direction)
+	FString moveDirection;
 };
