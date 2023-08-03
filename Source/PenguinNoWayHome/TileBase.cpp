@@ -7,9 +7,10 @@
 ATileBase::ATileBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	breakTime = 0.f;
+	breakTime = 0.5f;
 	onceCheck = false;
 	moveDirection = "";
+	moveSpeed = 10.f;
 }
 
 void ATileBase::BeginPlay()
@@ -32,18 +33,19 @@ void ATileBase::CollisionCheck()
 
 	FVector collisionLocation = GetActorLocation();
 
-	collisionLocation = { collisionLocation.X, collisionLocation.Y, collisionLocation.Z + 10};
+	collisionLocation = { collisionLocation.X, collisionLocation.Y, collisionLocation.Z + 4};
 
 	bool onCollision = GetWorld()->OverlapMultiByChannel(resultArray,
 		collisionLocation, FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel3,
-		FCollisionShape::MakeSphere(10),
+		FCollisionShape::MakeBox(FVector({14, 32, 20})),
 		param);
 
 #if ENABLE_DRAW_DEBUG
 	FColor	collisionColor = onCollision ? FColor::Red : FColor::Green;
+	FVector extent = FVector({ 14, 32, 20 });
 
-	DrawDebugSphere(GetWorld(), collisionLocation, 10, 10, collisionColor, false, 0.5f);
+	DrawDebugBox(GetWorld(), collisionLocation, extent, collisionColor, false, 0.5f);
 
 #endif
 
@@ -51,49 +53,51 @@ void ATileBase::CollisionCheck()
 	{
 		int range = resultArray.Num();
 
-		for (int i = 0; i < range; i++)
+		if (range < 2)
 		{
-			APlayerCharacterBase* player = Cast<APlayerCharacterBase>(resultArray[i].GetActor());
+			APlayerCharacterBase* player = Cast<APlayerCharacterBase>(resultArray[0].GetActor());
 
-			if (IsValid(player) && !onceCheck)
+			if (tileType == ETileType::Break && !onceCheck)
 			{
-				switch (tileType)
+				onceCheck = true;
+				StartBreak();
+			}
+			else if (tileType == ETileType::Move)
+			{
+				if (IsValid(player))
+					MoveTile(moveDirection);
+				else if (startLocation != GetActorLocation())
 				{
-				case ETileType::None:
-					break;
-				case ETileType::Break:
-					onceCheck = true;
-					StartBreak();
-					break;
-				case ETileType::Move:
-				{
-					if (moveDirection != "")
-						MoveTile(moveDirection);
+					float deltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
+
+					FVector curLocation = GetActorLocation();
+
+					FVector NewLocation = FMath::Lerp(curLocation, startLocation, FMath::Clamp(deltaTime * 5.f, 0.0f, 1.0f));
+
+					SetActorLocation(NewLocation);
 				}
-					break;
-				case ETileType::Jump:
+			}
+			else if (tileType == ETileType::Jump)
+			{
+				if (IsValid(player))
+				{
 					player->GetCharacterMovement()->JumpZVelocity = 500.0f;
 					player->SetState(EPlayerState::Fly);
 					player->Jump();
-					break;
-				default:
-					break;
 				}
+
 			}
 		}
 	}
-	else
+	else if (startLocation != GetActorLocation() && tileType == ETileType::Move)
 	{
-		if (startLocation != GetActorLocation())
-		{
-			float deltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
+		float deltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
 
-			FVector curLocation = GetActorLocation();
+		FVector curLocation = GetActorLocation();
 
-			FVector NewLocation = FMath::Lerp(curLocation, startLocation, FMath::Clamp(deltaTime * 5.f, 0.0f, 1.0f));
+		FVector NewLocation = FMath::Lerp(curLocation, startLocation, FMath::Clamp(deltaTime * 5.f, 0.0f, 1.0f));
 
-			SetActorLocation(NewLocation);
-		}
+		SetActorLocation(NewLocation);
 	}
 }
 
@@ -110,14 +114,30 @@ void ATileBase::OnTimerExpired()
 
 void ATileBase::MoveTile(FString MoveDirection)
 {
-	if (MoveDirection == "Down") 
+	float deltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
+	FVector curLocation = GetActorLocation();
+	
+	if (MoveDirection == "Down")
 	{
-		float deltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
-
-		FVector curLocation = GetActorLocation();
-
-		float moveSpeed = 10.0f; 
 		FVector newLocation = curLocation + FVector(0.f, 0.f, -moveSpeed * deltaTime);
+
+		SetActorLocation(newLocation);
+	}
+	else if (MoveDirection == "Right")
+	{
+		FVector newLocation = curLocation + FVector(moveSpeed * deltaTime, 0.f, 0.f);
+
+		SetActorLocation(newLocation);
+	}
+	else if (MoveDirection == "Left")
+	{
+		FVector newLocation = curLocation + FVector(-moveSpeed * deltaTime, 0.f, 0.f);
+
+		SetActorLocation(newLocation);
+	}
+	else if (MoveDirection == "Up")
+	{
+		FVector newLocation = curLocation + FVector(0.f, 0.f, moveSpeed * deltaTime);
 
 		SetActorLocation(newLocation);
 	}

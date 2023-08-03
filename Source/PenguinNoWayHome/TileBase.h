@@ -43,13 +43,16 @@ public:
 
 	FTimerHandle timerHandle;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Time)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BreakTile)
 	float breakTime;
 
 	bool onceCheck;
 
 	FVector startLocation;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Direction)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MoveTile)
 	FString moveDirection;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MoveTile)
+	float moveSpeed;
 };

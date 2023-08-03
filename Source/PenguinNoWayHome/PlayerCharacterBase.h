@@ -130,4 +130,6 @@ public:
 	
 	bool movable;
 	bool isClear;
+
+	FVector startLocation;
 };

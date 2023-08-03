@@ -67,7 +67,7 @@ void APolarBear::CollisionCheck()
 
 	bool onCollision = GetWorld()->OverlapMultiByChannel(resultArray,
 		collisionLocation, FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel2,
+		ECollisionChannel::ECC_GameTraceChannel6,
 		FCollisionShape::MakeSphere(20),
 		param);
 
@@ -104,7 +104,7 @@ void APolarBear::TakeDamageCollisionCheck()
 
 	bool onCollision = GetWorld()->OverlapMultiByChannel(resultArray,
 		collisionLocation, FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel2,
+		ECollisionChannel::ECC_GameTraceChannel6,
 		FCollisionShape::MakeSphere(20),
 		param);
 

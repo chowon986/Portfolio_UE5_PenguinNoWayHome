@@ -38,18 +38,19 @@ void AFan::CollisionCheck()
 
 	FVector originLocation = GetActorLocation();
 
-	FVector collisionLocation = { originLocation.X + GetActorForwardVector().X * 70.f, originLocation.Y, originLocation.Z};
+	FVector collisionLocation = { originLocation.X + GetActorForwardVector().X * 40.f, originLocation.Y, originLocation.Z};
 	
 	bool onCollision = GetWorld()->OverlapMultiByChannel(resultArray,
 		collisionLocation, FQuat::Identity,
-		ECollisionChannel::ECC_Pawn,
-		FCollisionShape::MakeSphere(60),
+		ECollisionChannel::ECC_GameTraceChannel3,
+		FCollisionShape::MakeBox(FVector({ 35, 32, 32 })),
 		param);
 
 #if ENABLE_DRAW_DEBUG
 	FColor	collisionColor = onCollision ? FColor::Red : FColor::Green;
+	FVector extent = FVector({ 35, 32, 32 });
 
-	DrawDebugSphere(GetWorld(), collisionLocation, 60, 10, collisionColor, false, 0.5f);
+	DrawDebugBox(GetWorld(), collisionLocation, extent, collisionColor, false, 0.5f);
 
 #endif
 

@@ -41,18 +41,27 @@ APlayerCharacterBase::APlayerCharacterBase()
 	prevRotationValue = 1.f;
 
 	maxHealth = 100;
-	health = 10;
+	health = 30;
 
 	maxFly = 10.f;
 	fly = 5.f;
 
 	elapsedTime = 0.f;
 	movable = true;
+
+	FString stringHealth = FString::FromInt(health);
+	
+	LOG(TEXT("Player Health: %d"), health);
+
+	FString message = TEXT("This is a log message!");
+	LOGSTRING(message);
 }
 
 void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	startLocation = FVector({ 200, 0, 130 });
 
 	if (APlayerController* playerController = Cast<APlayerController>(GetController()))
 	{
@@ -72,6 +81,12 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		FVector curLocation = GetActorLocation();
 		if (curLocation.Z < 0.f)
 			Destroy();
+	}
+	else
+	{
+		FVector curLocation = GetActorLocation();
+		if (curLocation.Z < 0.f)
+			SetActorLocation(startLocation);
 	}
 
 	if(state != EPlayerState::Death)
@@ -264,8 +279,8 @@ void APlayerCharacterBase::OnFlipbookFinishedPlaying()
 
 void APlayerCharacterBase::SetCurrentHealth(float value)
 {	
-	/*health = value;
-	OnPlayerHPChangedEvent.Broadcast(health);*/
+	//health = value;
+	//OnPlayerHPChangedEvent.Broadcast(health);
 }
 
 void APlayerCharacterBase::SetCurrentFly(float value)

@@ -53,9 +53,12 @@ public:
 	UPaperFlipbookComponent* flipbookComponent;
 
 	float elapsedTime;
-	float attackTime;
-	float intervalTime;
 	bool attackable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Time)
+	float intervalTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Time)
+	float attackTime;
 
 	FTimerHandle timerHandle;
 	APlayerCharacterBase* player; 
