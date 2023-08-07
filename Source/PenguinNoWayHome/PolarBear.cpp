@@ -17,10 +17,10 @@ APolarBear::APolarBear()
 	}
 
 	elapsedTime = 0.f;
+	deathElapsedTime = 0.f;
 	intervalTime = 2.f;
 	attackTime = 1.f;
 	attackable = true;
-
 	player = nullptr;
 }
 
@@ -52,6 +52,14 @@ void APolarBear::Tick(float DeltaTime)
 			TakeDamageCollisionCheck();
 			attackable = false;
 		}
+	}
+
+	if (state == EMonsterState::Death)
+	{
+		deathElapsedTime += DeltaTime;
+
+		if (deathElapsedTime > 1.f)
+			Destroy();
 	}
 }
 
@@ -127,6 +135,8 @@ void APolarBear::TakeDamageCollisionCheck()
 			{
 				player->AddLocationY(100.f);
 				player->SetState(EPlayerState::Fly);
+
+				SetState(EMonsterState::Death);
 			}
 		}
 	}

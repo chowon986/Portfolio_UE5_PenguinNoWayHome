@@ -11,6 +11,7 @@ enum class EMonsterState : uint8
 {
 	Idle,
 	Attack,
+	Death,
 };
 
 class APlayerCharacterBase;
@@ -51,6 +52,7 @@ public:
 	UPaperFlipbookComponent* flipbookComponent;
 
 	float elapsedTime;
+	float deathElapsedTime;
 	bool attackable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Time)
@@ -58,5 +60,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Time)
 	float attackTime;
 
-	APlayerCharacterBase* player; 
+	APlayerCharacterBase* player;
 };

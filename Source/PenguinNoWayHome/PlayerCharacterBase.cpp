@@ -48,7 +48,6 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 	elapsedTime = 0.f;
 	movable = true;
-	onceCheck = false;
 	//FString stringHealth = FString::FromInt(health);
 	//
 	//LOG(TEXT("Player Health: %d"), health);
@@ -80,8 +79,9 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		if (curLocation.Z < 0.f)
 			Destroy();
 	}
-	else if(onceCheck == false)
-		OnceCollisionCheck();
+	else
+		CollisionCheck();
+		
 
 	if(state != EPlayerState::Death)
 		elapsedTime += DeltaTime;
@@ -307,7 +307,14 @@ void APlayerCharacterBase::AddLocationY(float value)
 	SetActorLocation({ curLocation.X, curLocation.Y + value, curLocation.Z });
 }
 
-void APlayerCharacterBase::OnceCollisionCheck()
+void APlayerCharacterBase::SetLocationYtoZero()
+{
+	FVector curLocation = GetActorLocation();
+
+	SetActorLocation({ curLocation.X, 0, curLocation.Z });
+}
+
+void APlayerCharacterBase::CollisionCheck()
 {
 	FCollisionQueryParams param(NAME_None, false, this);
 
@@ -335,10 +342,9 @@ void APlayerCharacterBase::OnceCollisionCheck()
 		for (int i = 0; i < range; i++)
 		{
 			FString actorLabel = resultArray[i].GetActor()->GetActorLabel();
-			if (actorLabel == "Plane")
+			if (actorLabel == "Plane" && GetActorLocation().Y != 0)
 			{
-				AddLocationY(-100);
-				onceCheck = true;
+				SetLocationYtoZero();
 			}
 		}
 	}
