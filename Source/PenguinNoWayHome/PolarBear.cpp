@@ -127,7 +127,6 @@ void APolarBear::TakeDamageCollisionCheck()
 			{
 				player->AddLocationY(100.f);
 				player->SetState(EPlayerState::Fly);
-				GetWorldTimerManager().SetTimer(timerHandle, FTimerDelegate::CreateUObject(this, &APolarBear::OnTimerExpired), attackTime, false);
 			}
 		}
 	}
@@ -165,10 +164,4 @@ void APolarBear::OnFlipbookFinishedPlaying()
 {
 	if (state == EMonsterState::Attack)
 		SetState(EMonsterState::Idle);
-}
-
-void APolarBear::OnTimerExpired()
-{
-	player->AddLocationY(-100.f);
-	timerHandle.Invalidate();
 }

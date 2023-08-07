@@ -38,8 +38,6 @@ public:
 	UFUNCTION()
 		void OnFlipbookFinishedPlaying();
 
-	void OnTimerExpired();
-
 public:
 	EMonsterState state;
 
@@ -60,6 +58,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Time)
 	float attackTime;
 
-	FTimerHandle timerHandle;
 	APlayerCharacterBase* player; 
 };

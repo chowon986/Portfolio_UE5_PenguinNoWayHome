@@ -70,6 +70,7 @@ public:
 	bool GetIsCleared() { return isClear; }
 	void SetIsClear(bool value) { isClear = value; }
 	void AddLocationY(float value);
+	void OnceCollisionCheck();
 
 private:
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -130,6 +131,5 @@ public:
 	
 	bool movable;
 	bool isClear;
-
-	FVector startLocation;
+	bool onceCheck;
 };

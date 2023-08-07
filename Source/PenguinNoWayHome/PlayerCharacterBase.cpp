@@ -48,20 +48,18 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 	elapsedTime = 0.f;
 	movable = true;
+	onceCheck = false;
+	//FString stringHealth = FString::FromInt(health);
+	//
+	//LOG(TEXT("Player Health: %d"), health);
 
-	FString stringHealth = FString::FromInt(health);
-	
-	LOG(TEXT("Player Health: %d"), health);
-
-	FString message = TEXT("This is a log message!");
-	LOGSTRING(message);
+	//FString message = TEXT("This is a log message!");
+	//LOGSTRING(message);
 }
 
 void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	startLocation = FVector({ 200, 0, 130 });
 
 	if (APlayerController* playerController = Cast<APlayerController>(GetController()))
 	{
@@ -82,12 +80,8 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		if (curLocation.Z < 0.f)
 			Destroy();
 	}
-	else
-	{
-		FVector curLocation = GetActorLocation();
-		if (curLocation.Z < 0.f)
-			SetActorLocation(startLocation);
-	}
+	else if(onceCheck == false)
+		OnceCollisionCheck();
 
 	if(state != EPlayerState::Death)
 		elapsedTime += DeltaTime;
@@ -311,4 +305,41 @@ void APlayerCharacterBase::AddLocationY(float value)
 	FVector curLocation = GetActorLocation();
 
 	SetActorLocation({ curLocation.X, curLocation.Y + value, curLocation.Z });
+}
+
+void APlayerCharacterBase::OnceCollisionCheck()
+{
+	FCollisionQueryParams param(NAME_None, false, this);
+
+	TArray<FOverlapResult> resultArray;
+
+	FVector collisionLocation = GetActorLocation();
+
+	bool onCollision = GetWorld()->OverlapMultiByChannel(resultArray,
+		collisionLocation, FQuat::Identity,
+		ECollisionChannel::ECC_Pawn,
+		FCollisionShape::MakeSphere(14),
+		param);
+
+#if ENABLE_DRAW_DEBUG
+	FColor	collisionColor = onCollision ? FColor::Red : FColor::Green;
+
+	DrawDebugSphere(GetWorld(), collisionLocation, 14, 3, collisionColor, false, 0.5f);
+
+#endif
+
+	if (onCollision)
+	{
+		int range = resultArray.Num();
+
+		for (int i = 0; i < range; i++)
+		{
+			FString actorLabel = resultArray[i].GetActor()->GetActorLabel();
+			if (actorLabel == "Plane")
+			{
+				AddLocationY(-100);
+				onceCheck = true;
+			}
+		}
+	}
 }

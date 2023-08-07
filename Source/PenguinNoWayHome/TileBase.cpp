@@ -28,6 +28,7 @@ void ATileBase::Tick(float DeltaTime)
 void ATileBase::CollisionCheck()
 {
 	FCollisionQueryParams param(NAME_None, false, this);
+	param.AddIgnoredActor(ECC_GameTraceChannel7);
 
 	TArray<FOverlapResult> resultArray;
 
