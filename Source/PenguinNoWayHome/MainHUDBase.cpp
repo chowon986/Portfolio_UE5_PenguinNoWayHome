@@ -3,19 +3,26 @@
 
 #include "MainHUDBase.h"
 #include "ClearTimeBase.h"
+#include "TitleBase.h"
 #include "PlayerCharacterController.h"
 
 void UMainHUDBase::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	//hpBar = Cast<UHPBarBase>(GetWidgetFromName(FName(TEXT("HPBar"))));
-	//if (IsValid(hpBar))
-	//	hpBar->SetVisibility(ESlateVisibility::Visible);
-
 	clearTime = Cast<UClearTimeBase>(GetWidgetFromName(FName(TEXT("ClearTime"))));
 	if (IsValid(clearTime))
 		clearTime->SetVisibility(ESlateVisibility::Hidden);
+
+	title = Cast<UTitleBase>(GetWidgetFromName(FName(TEXT("Title"))));
+
+	if ("TitleLevel" == GetWorld()->GetName())
+		title->SetVisibility(ESlateVisibility::Visible);
+	else
+		title->SetVisibility(ESlateVisibility::Hidden);
+
+	if (IsValid(title))
+		title->SetMainHUD(this);
 
 	onceCheck = false;
 }
@@ -39,4 +46,10 @@ void UMainHUDBase::OnClearTimeChanged(bool value)
 		clearTime->SetCountTimeText();
 		clearTime->SetVisibility(ESlateVisibility::Visible);
 	}
+}
+
+void UMainHUDBase::ChangeLevel(FString nextLevel)
+{
+	title->SetVisibility(ESlateVisibility::Hidden);
+	UGameplayStatics::OpenLevel(this, *nextLevel);
 }

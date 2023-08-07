@@ -3,29 +3,29 @@
 #pragma once
 
 #include "GameInfo.h"
+#include <Components/Button.h>
 #include "Blueprint/UserWidget.h"
-#include "MainHUDBase.generated.h"
+#include "TitleBase.generated.h"
 
 /**
  * 
  */
-class UTitleBase;
-class UClearTimeBase;
+class UMainHUDBase;
 UCLASS()
-class PENGUINNOWAYHOME_API UMainHUDBase : public UUserWidget
+class PENGUINNOWAYHOME_API UTitleBase : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& _geo, float _DeltaTime) override;
 
-	void OnClearTimeChanged(bool value);
-	void ChangeLevel(FString nextLevel);
+	UFUNCTION()
+	void ClickStartButton();
 
-public:/*
-	UHPBarBase* hpBar;*/
-	UClearTimeBase* clearTime;
-	bool onceCheck;
-	UTitleBase* title;
+	void SetMainHUD(UUserWidget* MainHUD);
+
+private:
+	UButton* startButton;
+	UMainHUDBase* mainHUD;
 };

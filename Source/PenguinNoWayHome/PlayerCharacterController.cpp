@@ -10,6 +10,8 @@ APlayerCharacterController::APlayerCharacterController()
 
 	clearTime = 0.f;
 	canCountTime = true;
+
+	bShowMouseCursor = true;
 }
 
 void APlayerCharacterController::BeginPlay()
