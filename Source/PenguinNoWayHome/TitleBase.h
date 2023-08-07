@@ -4,6 +4,8 @@
 
 #include "GameInfo.h"
 #include <Components/Button.h>
+#include <Components/TextBlock.h>
+#include <Components\Image.h>
 #include "Blueprint/UserWidget.h"
 #include "TitleBase.generated.h"
 
@@ -23,9 +25,18 @@ public:
 	UFUNCTION()
 	void ClickStartButton();
 
+	UFUNCTION()
+	void OnHoverButton();
+
+	UFUNCTION()
+	void UnOnHoverButton();
+
 	void SetMainHUD(UUserWidget* MainHUD);
+	void PlayWidgetAnimation(FString AnimationName);
 
 private:
 	UButton* startButton;
 	UMainHUDBase* mainHUD;
+	UTextBlock* startText;
+	TMap<FString, UWidgetAnimation*> widgetAnimations;
 };
