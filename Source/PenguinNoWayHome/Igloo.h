@@ -23,4 +23,13 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void CollisionCheck();
+	void OnTimerExpired();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	UAudioComponent* audioComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
+	USoundBase* clear;
+
+	FTimerHandle timerHandle;
+	bool onceCheck;
 };

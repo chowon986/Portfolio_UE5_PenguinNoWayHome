@@ -21,11 +21,10 @@ public:
 	virtual void NativeTick(const FGeometry& _geo, float _DeltaTime) override;
 
 	void OnClearTimeChanged(bool value);
-	void ChangeLevel(FString nextLevel);
 
-public:/*
-	UHPBarBase* hpBar;*/
+public:
 	UClearTimeBase* clearTime;
+
 	bool onceCheck;
 	UTitleBase* title;
 };

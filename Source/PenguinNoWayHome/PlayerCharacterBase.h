@@ -72,6 +72,7 @@ public:
 	void AddLocationY(float value);
 	void SetLocationYtoZero();
 	void CollisionCheck();
+	void SetSound();
 
 private:
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -118,6 +119,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPaperFlipbookComponent* flipbookComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	UAudioComponent* audioComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
+	USoundBase* itemSoundBase;
 
 	int maxHealth;
 	int health;

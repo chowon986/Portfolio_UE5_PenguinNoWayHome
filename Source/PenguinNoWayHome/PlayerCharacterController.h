@@ -28,7 +28,8 @@ public:
 	virtual void PostInitializeComponents() override;
 
 	float GetClearTime() { return clearTime; }
-
+	void PlayClickButton();
+	void ChangeLevel();
 
 protected:
 	virtual void OnPossess(APawn* aPawn) override;
@@ -38,6 +39,17 @@ private:
 	float clearTime;
 	bool canCountTime;
 
+	FTimerHandle timerHandle;
+
 public:
 	CountTimeEvent OnPlayerCountTimeEvent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	UAudioComponent* audioComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	UAudioComponent* effectAudioComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
+	USoundBase* bgm;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
+	USoundBase* clickButton;
 };

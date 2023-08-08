@@ -3,6 +3,7 @@
 
 #include "TitleBase.h"
 #include "MainHUDBase.h"
+#include "PlayerCharacterController.h"
 #include "Animation/WidgetAnimation.h"
 
 void UTitleBase::NativeConstruct()
@@ -35,8 +36,9 @@ void UTitleBase::NativeTick(const FGeometry& _geo, float _DeltaTime)
 
 void UTitleBase::ClickStartButton()
 {
-	if (IsValid(mainHUD))
-		mainHUD->ChangeLevel("StoryLevel");
+	UWorld* curWorld = GetWorld();
+	APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetOwningLocalPlayer()->GetPlayerController(curWorld));
+	controller->PlayClickButton();
 }
 
 void UTitleBase::OnHoverButton()

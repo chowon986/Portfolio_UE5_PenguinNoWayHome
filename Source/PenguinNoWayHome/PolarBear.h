@@ -61,4 +61,10 @@ public:
 	float attackTime;
 
 	APlayerCharacterBase* player;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	UAudioComponent* audioComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
+	USoundBase* soundBase;
 };

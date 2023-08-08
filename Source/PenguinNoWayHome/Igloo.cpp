@@ -7,6 +7,11 @@
 AIgloo::AIgloo()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
+	audioComponent->bIsUISound = true;
+
+	onceCheck = false;
 }
 
 void AIgloo::BeginPlay()
@@ -53,12 +58,21 @@ void AIgloo::CollisionCheck()
 
 			if (IsValid(player))
 			{
-				if (player->GetCurrentHealth() > 0)
+				if (player->GetCurrentHealth() > 0 && !onceCheck)
 				{
+					onceCheck = true;
 					player->SetIsClear(true);
 					player->SetMovable(false);
+					audioComponent->SetSound(clear);
+					audioComponent->Play();
+					GetWorldTimerManager().SetTimer(timerHandle, FTimerDelegate::CreateUObject(this, &AIgloo::OnTimerExpired), 3.5f, false);
 				}
 			}
 		}
 	}
+}
+
+void AIgloo::OnTimerExpired()
+{
+	UGameplayStatics::OpenLevel(this, "TitleLevel");
 }

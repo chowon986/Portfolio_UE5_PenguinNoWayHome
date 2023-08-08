@@ -22,7 +22,7 @@ void UClearTimeBase::SetCountTimeText()
 	
 	if (IsValid(curWorld))
 	{
-		APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetOwningLocalPlayer()->GetPlayerController(GetWorld()));
+		APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetOwningLocalPlayer()->GetPlayerController(curWorld));
 
 		if (IsValid(controller))
 		{

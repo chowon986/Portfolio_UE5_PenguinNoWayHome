@@ -12,11 +12,22 @@ APlayerCharacterController::APlayerCharacterController()
 	canCountTime = true;
 
 	bShowMouseCursor = true;
+
+	audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
+	audioComponent->bIsUISound = true;
+
+	effectAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("EffectAudio"));
+	effectAudioComponent->bIsUISound = true;
 }
 
 void APlayerCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	audioComponent->SetSound(bgm);
+	audioComponent->Play();
+
+	effectAudioComponent->SetSound(clickButton);
 }
 
 void APlayerCharacterController::Tick(float DeltaTime)
@@ -49,6 +60,18 @@ void APlayerCharacterController::SetupInputComponent()
 void APlayerCharacterController::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+}
+
+void APlayerCharacterController::PlayClickButton()
+{
+	effectAudioComponent->Play();
+
+	GetWorldTimerManager().SetTimer(timerHandle, FTimerDelegate::CreateUObject(this, &APlayerCharacterController::ChangeLevel), 0.5f, false);
+}
+
+void APlayerCharacterController::ChangeLevel()
+{
+	UGameplayStatics::OpenLevel(this, "StoryLevel");
 }
 
 void APlayerCharacterController::OnPossess(APawn* aPawn)

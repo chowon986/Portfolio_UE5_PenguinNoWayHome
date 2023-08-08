@@ -68,12 +68,13 @@ void AItemBase::CollisionCheck()
 					{
 						float healthValue = (playerHealth + value) >= playerMaxHealth ? playerMaxHealth : (playerHealth + value);
 						player->SetCurrentHealth(healthValue);
-					}
+						player->SetSound();
+					}/*
 					else if (buffType[j] == EBuffType::FLY)
 					{
 						float flyValue = (playerFly + value) >= playerMaxFly ? playerMaxFly : (playerFly + value);
 						player->SetCurrentFly(flyValue);
-					}
+					}*/
 				}
 
 				Destroy();

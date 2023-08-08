@@ -54,6 +54,9 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 	//FString message = TEXT("This is a log message!");
 	//LOGSTRING(message);
+
+	audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
+	audioComponent->bIsUISound = true;
 }
 
 void APlayerCharacterBase::BeginPlay()
@@ -348,4 +351,10 @@ void APlayerCharacterBase::CollisionCheck()
 			}
 		}
 	}
+}
+
+void APlayerCharacterBase::SetSound()
+{
+	audioComponent->SetSound(itemSoundBase);
+	audioComponent->Play();
 }

@@ -22,11 +22,16 @@ APolarBear::APolarBear()
 	attackTime = 1.f;
 	attackable = true;
 	player = nullptr;
+
+	audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
+	audioComponent->bIsUISound = true;
 }
 
 void APolarBear::BeginPlay()
 {
 	Super::BeginPlay();
+
+	audioComponent->SetSound(soundBase);
 }
 
 void APolarBear::Tick(float DeltaTime)
@@ -136,6 +141,7 @@ void APolarBear::TakeDamageCollisionCheck()
 				player->AddLocationY(100.f);
 				player->SetState(EPlayerState::Fly);
 
+				audioComponent->Play();
 				SetState(EMonsterState::Death);
 			}
 		}

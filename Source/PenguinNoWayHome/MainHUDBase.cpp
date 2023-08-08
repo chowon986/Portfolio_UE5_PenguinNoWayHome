@@ -47,9 +47,3 @@ void UMainHUDBase::OnClearTimeChanged(bool value)
 		clearTime->SetVisibility(ESlateVisibility::Visible);
 	}
 }
-
-void UMainHUDBase::ChangeLevel(FString nextLevel)
-{
-	title->SetVisibility(ESlateVisibility::Hidden);
-	UGameplayStatics::OpenLevel(this, *nextLevel);
-}
