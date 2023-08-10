@@ -4,6 +4,7 @@
 #include "MainHUDBase.h"
 #include "ClearTimeBase.h"
 #include "TitleBase.h"
+#include "SettingBase.h"
 #include "PlayerCharacterController.h"
 
 void UMainHUDBase::NativeConstruct()
@@ -23,8 +24,20 @@ void UMainHUDBase::NativeConstruct()
 
 	if (IsValid(title))
 		title->SetMainHUD(this);
+	
+	SettingButton = Cast<UButton>(GetWidgetFromName(FName(TEXT("SettingBtn"))));
+	if (IsValid(SettingButton))
+		SettingButton->OnClicked.AddDynamic(this, &UMainHUDBase::ClickSettingButton);
+
+	Setting = Cast<USettingBase>(GetWidgetFromName(FName(TEXT("Setting"))));
+	if (IsValid(Setting))
+	{
+		Setting->SetVisibility(ESlateVisibility::Hidden);
+		Setting->SetMainHUD(this);
+	}
 
 	onceCheck = false;
+	isOnSettingButton = false;
 }
 
 void UMainHUDBase::NativeTick(const FGeometry& _geo, float _DeltaTime)
@@ -46,4 +59,14 @@ void UMainHUDBase::OnClearTimeChanged(bool value)
 		clearTime->SetCountTimeText();
 		clearTime->SetVisibility(ESlateVisibility::Visible);
 	}
+}
+
+void UMainHUDBase::ClickSettingButton()
+{
+	isOnSettingButton = !isOnSettingButton;
+
+	if (isOnSettingButton)
+		Setting->SetVisibility(ESlateVisibility::Visible);
+	else
+		Setting->SetVisibility(ESlateVisibility::Hidden);
 }

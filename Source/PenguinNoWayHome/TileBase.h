@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "GameInfo.h"
 #include "NonPlayerCharacterBase.h"
 #include "TileBase.generated.h"
 

@@ -30,6 +30,10 @@ public:
 	float GetClearTime() { return clearTime; }
 	void PlayClickButton();
 	void ChangeLevel();
+	void OnOffMusic(bool value);
+	void OnOffSound(bool value);
+	bool OnSound() { return isOnSound; }
+	bool OnMusic() { return isOnMusic; }
 
 protected:
 	virtual void OnPossess(APawn* aPawn) override;
@@ -52,4 +56,7 @@ public:
 	USoundBase* bgm;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
 	USoundBase* clickButton;
+
+	bool isOnMusic;
+	bool isOnSound;
 };

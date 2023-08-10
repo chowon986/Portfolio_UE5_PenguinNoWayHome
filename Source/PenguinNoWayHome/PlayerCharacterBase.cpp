@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "PaperFlipbookComponent.h"
+#include "PlayerCharacterController.h"
 
 
 APlayerCharacterBase::APlayerCharacterBase()
@@ -346,9 +347,7 @@ void APlayerCharacterBase::CollisionCheck()
 		{
 			FString actorLabel = resultArray[i].GetActor()->GetActorLabel();
 			if (actorLabel == "Plane" && GetActorLocation().Y != 0)
-			{
 				SetLocationYtoZero();
-			}
 		}
 	}
 }

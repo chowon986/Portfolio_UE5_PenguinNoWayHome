@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "GameInfo.h"
 #include "HPBarBase.h"
 #include "GameFramework/GameModeBase.h"
 #include "PenguinNoWayHomeGameModeBase.generated.h"

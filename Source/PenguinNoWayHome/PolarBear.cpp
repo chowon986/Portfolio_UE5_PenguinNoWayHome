@@ -4,6 +4,7 @@
 #include "PolarBear.h"
 #include "PlayerCharacterBase.h"
 #include "PaperFlipbookComponent.h"
+#include "PlayerCharacterController.h"
 
 APolarBear::APolarBear()
 {
@@ -141,7 +142,11 @@ void APolarBear::TakeDamageCollisionCheck()
 				player->AddLocationY(100.f);
 				player->SetState(EPlayerState::Fly);
 
-				audioComponent->Play();
+				APlayerCharacterController* controller = Cast<APlayerCharacterController>(player->GetController());
+				if (controller->OnSound())
+				{
+					audioComponent->Play();
+				}
 				SetState(EMonsterState::Death);
 			}
 		}

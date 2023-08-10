@@ -3,6 +3,7 @@
 
 #include "Igloo.h"
 #include "PlayerCharacterBase.h"
+#include "PlayerCharacterController.h"
 
 AIgloo::AIgloo()
 {
@@ -63,8 +64,13 @@ void AIgloo::CollisionCheck()
 					onceCheck = true;
 					player->SetIsClear(true);
 					player->SetMovable(false);
-					audioComponent->SetSound(clear);
-					audioComponent->Play();
+
+					APlayerCharacterController* controller = Cast<APlayerCharacterController>(player->GetController());
+					if (controller->OnSound())
+					{
+						audioComponent->SetSound(clear);
+						audioComponent->Play();
+					}
 					GetWorldTimerManager().SetTimer(timerHandle, FTimerDelegate::CreateUObject(this, &AIgloo::OnTimerExpired), 3.5f, false);
 				}
 			}

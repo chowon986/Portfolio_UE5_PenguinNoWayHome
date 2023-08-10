@@ -3,12 +3,14 @@
 #pragma once
 
 #include "GameInfo.h"
+#include <Components/Button.h>
 #include "Blueprint/UserWidget.h"
 #include "MainHUDBase.generated.h"
 
 /**
  * 
  */
+class USettingBase;
 class UTitleBase;
 class UClearTimeBase;
 UCLASS()
@@ -22,9 +24,15 @@ public:
 
 	void OnClearTimeChanged(bool value);
 
+	UFUNCTION()
+	void ClickSettingButton();
+
 public:
 	UClearTimeBase* clearTime;
 
 	bool onceCheck;
+	bool isOnSettingButton;
 	UTitleBase* title;
+	UButton* SettingButton;
+	USettingBase* Setting;
 };

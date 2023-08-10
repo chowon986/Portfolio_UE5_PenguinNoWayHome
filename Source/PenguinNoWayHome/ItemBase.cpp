@@ -3,6 +3,7 @@
 
 #include "ItemBase.h"
 #include "PlayerCharacterBase.h"
+#include "PlayerCharacterController.h"
 
 AItemBase::AItemBase()
 {
@@ -68,13 +69,14 @@ void AItemBase::CollisionCheck()
 					{
 						float healthValue = (playerHealth + value) >= playerMaxHealth ? playerMaxHealth : (playerHealth + value);
 						player->SetCurrentHealth(healthValue);
-						player->SetSound();
-					}/*
-					else if (buffType[j] == EBuffType::FLY)
-					{
-						float flyValue = (playerFly + value) >= playerMaxFly ? playerMaxFly : (playerFly + value);
-						player->SetCurrentFly(flyValue);
-					}*/
+
+						APlayerCharacterController* controller = Cast<APlayerCharacterController>(player->GetController());
+						if (IsValid(controller))
+						{
+							if(controller->OnSound())
+								player->SetSound();
+						}
+					}
 				}
 
 				Destroy();

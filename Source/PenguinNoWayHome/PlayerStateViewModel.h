@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "GameInfo.h"
 #include "MVVMViewModelBase.h"
 #include "PlayerStateViewModel.generated.h"
 

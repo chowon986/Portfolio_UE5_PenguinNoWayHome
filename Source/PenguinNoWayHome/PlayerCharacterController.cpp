@@ -18,6 +18,9 @@ APlayerCharacterController::APlayerCharacterController()
 
 	effectAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("EffectAudio"));
 	effectAudioComponent->bIsUISound = true;
+
+	isOnMusic = true;
+	isOnSound = true;
 }
 
 void APlayerCharacterController::BeginPlay()
@@ -25,7 +28,9 @@ void APlayerCharacterController::BeginPlay()
 	Super::BeginPlay();
 
 	audioComponent->SetSound(bgm);
-	audioComponent->Play();
+	
+	if(isOnMusic)
+		audioComponent->Play();
 
 	effectAudioComponent->SetSound(clickButton);
 }
@@ -64,7 +69,8 @@ void APlayerCharacterController::PostInitializeComponents()
 
 void APlayerCharacterController::PlayClickButton()
 {
-	effectAudioComponent->Play();
+	if(isOnSound)
+		effectAudioComponent->Play();
 
 	GetWorldTimerManager().SetTimer(timerHandle, FTimerDelegate::CreateUObject(this, &APlayerCharacterController::ChangeLevel), 0.5f, false);
 }
@@ -72,6 +78,21 @@ void APlayerCharacterController::PlayClickButton()
 void APlayerCharacterController::ChangeLevel()
 {
 	UGameplayStatics::OpenLevel(this, "StoryLevel");
+}
+
+void APlayerCharacterController::OnOffMusic(bool value)
+{
+	isOnMusic = value;
+
+	if (value)
+		audioComponent->Play();
+	else
+		audioComponent->Stop();
+}
+
+void APlayerCharacterController::OnOffSound(bool value)
+{
+	isOnSound = value;
 }
 
 void APlayerCharacterController::OnPossess(APawn* aPawn)
