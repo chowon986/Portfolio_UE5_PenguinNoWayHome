@@ -126,11 +126,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
 	USoundBase* itemSoundBase;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
+	UCameraComponent* cameraComponent;
+
 	int maxHealth;
 	int health;
 
 	float maxFly;
 	float fly;
+	
+	FVector cameraStartPos;
 
 	float elapsedTime;
 

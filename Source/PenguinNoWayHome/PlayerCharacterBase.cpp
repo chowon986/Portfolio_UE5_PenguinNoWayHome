@@ -30,6 +30,8 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> inputFlyAction(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/IAFly.IAFly'"));
 
+	cameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+
 	if (inputFlyAction.Succeeded())
 		flyAction = inputFlyAction.Object;
 
@@ -71,11 +73,23 @@ void APlayerCharacterBase::BeginPlay()
 			subsystem->AddMappingContext(defaultContext, 0);
 		}
 	}
+
+	FVector playerLocation = GetTransform().GetLocation();
+	cameraComponent->SetAbsolute(true);
+	cameraComponent->SetWorldLocation({ 32 * 5.5f, playerLocation.Y + 1000.f, playerLocation.Z });
+	cameraComponent->SetWorldRotation(FRotator(0, -90, 0));
 }
 
 void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (cameraComponent)
+	{
+		FVector cameraLocation = cameraComponent->GetComponentLocation();
+		FVector newCameraLocation = { cameraLocation.X , cameraLocation.Y, GetTransform().GetLocation().Z };
+		cameraComponent->SetWorldLocation(newCameraLocation);
+	}
 
 	if (state == EPlayerState::Death)
 	{
