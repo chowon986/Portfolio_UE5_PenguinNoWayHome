@@ -4,6 +4,7 @@
 #include "ClearTimeBase.h"
 #include "PlayerCharacterController.h"
 #include "PlayerCharacterBase.h"
+#include "PenguinNoWayHomeGameModeBase.h"
 
 void UClearTimeBase::NativeConstruct()
 {
@@ -32,6 +33,11 @@ void UClearTimeBase::SetCountTimeText()
 			int32 Seconds = FMath::RoundToInt(curTime - (Hours * 3600) - (Minutes * 60));
 
 			FString TimeString = FString::Printf(TEXT("%02d:%02d:%02d"), Hours, Minutes, Seconds);
+
+			APenguinNoWayHomeGameModeBase* gameMode = Cast<APenguinNoWayHomeGameModeBase>(curWorld->GetAuthGameMode());
+
+			if (IsValid(gameMode))
+				gameMode->Save(Hours, Minutes, Seconds);
 
 			countTime->SetText(FText::FromString(TimeString));
 		}

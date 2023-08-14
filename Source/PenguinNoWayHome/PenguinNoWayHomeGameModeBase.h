@@ -27,6 +27,10 @@ public:
 
 	UMainHUDBase* GetMainHUD() const { return mainHUD; }
 
+	void Save(int32 Hours, int32 Minutes, int32 Seconds);
+	void Save();
+	void Load();
+
 public:
 	UPROPERTY()
 		UMainHUDBase* mainHUD;

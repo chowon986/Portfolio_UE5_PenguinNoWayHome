@@ -28,6 +28,14 @@
 		{
 			"Name": "ModelViewViewModel",
 			"Enabled": true
+		},
+		{
+			"Name": "OnlineSubsystemEOS",
+			"Enabled": true
+		},
+		{
+			"Name": "EOSShared",
+			"Enabled": true
 		}
 	]
 }
