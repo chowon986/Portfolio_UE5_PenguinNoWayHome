@@ -51,6 +51,10 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 	elapsedTime = 0.f;
 	movable = true;
+
+	prevDirection = "Right";
+	direction = "Right";
+
 	//FString stringHealth = FString::FromInt(health);
 	//
 	//LOG(TEXT("Player Health: %d"), health);
@@ -68,6 +72,9 @@ void APlayerCharacterBase::BeginPlay()
 
 	if (APlayerController* playerController = Cast<APlayerController>(GetController()))
 	{
+		if (joystick)
+			playerController->ActivateTouchInterface(joystick);
+
 		if (UEnhancedInputLocalPlayerSubsystem* subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
 		{
 			subsystem->AddMappingContext(defaultContext, 0);
@@ -165,7 +172,20 @@ void APlayerCharacterBase::InputMoveKey(const FInputActionValue& value)
 			SetState(EPlayerState::Run);
 		}
 
-		SetSpriteRotation(movementVector.X);
+		LOG(TEXT("CurMovementVectorX: %f"), movementVector.X);
+
+		if (movementVector.X > 0)
+			direction = "Right";
+		else
+			direction = "Left";
+
+		if (direction != prevDirection)
+		{
+			prevDirection = direction;
+			SetSpriteRotation(movementVector.X);
+		}
+
+		//SetSpriteRotation(movementVector.X);
 	}
 }
 
@@ -346,12 +366,12 @@ void APlayerCharacterBase::CollisionCheck()
 		FCollisionShape::MakeSphere(14),
 		param);
 
-#if ENABLE_DRAW_DEBUG
-	FColor	collisionColor = onCollision ? FColor::Red : FColor::Green;
-
-	DrawDebugSphere(GetWorld(), collisionLocation, 14, 3, collisionColor, false, 0.5f);
-
-#endif
+//#if ENABLE_DRAW_DEBUG
+//	FColor	collisionColor = onCollision ? FColor::Red : FColor::Green;
+//
+//	DrawDebugSphere(GetWorld(), collisionLocation, 14, 3, collisionColor, false, 0.5f);
+//
+//#endif
 
 	if (onCollision)
 	{

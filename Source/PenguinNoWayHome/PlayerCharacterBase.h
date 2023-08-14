@@ -129,6 +129,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
 	UCameraComponent* cameraComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Joystick)
+	UTouchInterface* joystick;
+
 	int maxHealth;
 	int health;
 
@@ -136,6 +139,8 @@ public:
 	float fly;
 	
 	FVector cameraStartPos;
+	FString direction;
+	FString prevDirection;
 
 	float elapsedTime;
 
