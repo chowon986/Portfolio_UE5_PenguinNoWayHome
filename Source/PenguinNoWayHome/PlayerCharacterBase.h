@@ -73,6 +73,7 @@ public:
 	void SetLocationYtoZero();
 	void CollisionCheck();
 	void SetSound();
+	void ClickJumpButton();
 
 private:
 	UPROPERTY(EditAnywhere, Category = Input)

@@ -389,3 +389,16 @@ void APlayerCharacterBase::SetSound()
 	audioComponent->SetSound(itemSoundBase);
 	audioComponent->Play();
 }
+
+void APlayerCharacterBase::ClickJumpButton()
+{
+	if (movable)
+	{
+		if (state == EPlayerState::Idle || state == EPlayerState::Run || state == EPlayerState::JumpEnd)
+		{
+			GetCharacterMovement()->JumpZVelocity = 300.0f;
+			SetState(EPlayerState::JumpStart);
+			Jump();
+		}
+	}
+}
