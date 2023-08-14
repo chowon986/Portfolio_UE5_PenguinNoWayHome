@@ -172,7 +172,7 @@ void APlayerCharacterBase::InputMoveKey(const FInputActionValue& value)
 			SetState(EPlayerState::Run);
 		}
 
-		LOG(TEXT("CurMovementVectorX: %f"), movementVector.X);
+		// LOG(TEXT("CurMovementVectorX: %f"), movementVector.X);
 
 		if (movementVector.X > 0)
 			direction = "Right";
@@ -184,8 +184,6 @@ void APlayerCharacterBase::InputMoveKey(const FInputActionValue& value)
 			prevDirection = direction;
 			SetSpriteRotation(movementVector.X);
 		}
-
-		//SetSpriteRotation(movementVector.X);
 	}
 }
 
